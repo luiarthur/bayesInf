@@ -32,18 +32,11 @@ rejection.sampler <- function(log.density.target,log.density.envelope,sample.env
 
 
 # Importance Sampler ############################################################
-importance.sampler <- function(p.den,h,q.den,q.sampler,B=1e5,log=F) {
+importance.sampler <- function(p.den,h,q.den,q.sampler,B=1e5,ret_w=F) {
   samps <- q.sampler(B)
-  out <- NULL
-  if (log) {
-    w <- function(x) lp.den(x) - lq.den(x)
-    log_sum_w <- log(sum( exp(w(samps)) ))
-    out <- exp( sum(log( h(samps) ) + w(samps) - log_sum_w) )
-    print("Not Done")
-  } else {
-    w <- function(x) p.den(x) / q.den(x) 
-    sum_w <- sum( w(samps) )
-    out <- sum(h(samps) * w(samps)) / sum_w
-  }
+  w <- function(x) p.den(x) / q.den(x) 
+  ws <- w(samps)
+  out <- sum(h(samps) * ws) / sum(ws)
+  if (ret_w) out <- list("mean"=out,"w"=ws,"samps"=samps)
   out
 }

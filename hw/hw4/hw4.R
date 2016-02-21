@@ -1,5 +1,7 @@
-# idk: 1b, 
-# Unfinished: 1d
+# Problems I need to do:
+# 1a, 1b, 1c, 2a, 4, 5, 6, 7
+
+# idk: 1b
 
 source("../../myfunc/func.R")
 
@@ -33,11 +35,24 @@ onesim(params_1[1,])
 onesim(params_1[2,])
 onesim(params_1[3,])
 
-#2 #######################
+#2a #######################
 dat1 <- c( read.table("dat/dat1.dat")$V1 )
 dat2 <- c( read.table("dat/dat2.dat")$V1 )
-out <- importance.sampler(p.den=function(p) prod(dnorm(dat1,p,1)) * 1,
+
+like <- function(x,m) 
+  apply(matrix(1:length(m)),1,function(j) 1/sqrt(2*pi)*exp(-sum((x-m[j])^2)/(2)) )
+
+out1 <- importance.sampler(p.den=function(p) like(dat1,p) * 1,
                           h=function(x) x,
                           q.den=function(x) 1,
-                          q.sampler=function(n) rcauchy(n,0,1),B=100)
-out
+                          q.sampler=function(n) rcauchy(n,0,1),B=1000,ret_w=T)
+plot(out1$s,out1$w,xlim=c(-2,2),pch=20)
+abline(v=out1$mean,lwd=3,col="grey") # -.247
+out2 <- importance.sampler(p.den=function(p) like(dat2,p) * 1,
+                          h=function(x) x,
+                          q.den=function(x) 1,
+                          q.sampler=function(n) rcauchy(n,0,1),B=1000,ret_w=T)
+plot(out2$s,out2$w,xlim=c(0,20),pch=20)
+abline(v=out2$mean,lwd=3,col="grey") #7.96
+
+
