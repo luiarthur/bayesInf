@@ -19,6 +19,17 @@ ci_1a
 (1.5*.5*.1^-.5  + 8.5*7.5*.9^6.5 - 2*1.5*8.5*.1^.5*.9^7.5) * .1^2 /
 (.5*-.5*.1^-1.5 + 8.5*7.5*.9^6.5 - 2* .5*8.5*.1^-.5*.9^7.5) # .1961632
 
+laplace.approx <- function(bn,bd,n,mle,s2_n,s2_d,hn,hd,mle) {
+  bn(mle) / bd(mle) * s2_n(mle,n) / s2_d(mle,n) * exp(-n*(hn(mle,n)-hd(mle,n)))
+}
+
+laplace.approx(bn=function(p) 1, bd=function(p) 1, n=1, mle = 1/9,
+               s2_n=function(p,n) 1/ ((1.5/p^2 + 8.5/(1-p)^2) / n),
+               s2_d=function(p,n) 1/ ((0.5/p^2 + 8.5/(1-p)^2) / n),
+               hn=function(p,n) ( dbinom(1,10,p,log=T) + dbeta(p,1+.5+1,10-1+.5,log=T) ) / -n,
+               hd=function(p,n) ( dbinom(1,10,p,log=T) + dbeta(p,1+.5+0,10-1+.5,log=T) ) / -n)
+
+
 #1c) 
 samps_1c <- rbeta(1000000,1.5,9.5)
 quantile(samps_1c,c(.025,.975)) # (0.01101609 0.38192279)
