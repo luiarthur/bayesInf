@@ -13,15 +13,14 @@ header-includes:
 
 | | Write-up | Code | Skipped
 |:---:|:---:|:---:|:---:|
-| 1 | --- | a,b\*,c | d
+| 1 | --- | a,b,c | d
 | 2 | --- | a | b,c,d
 | 3 | --- |---| all
 | 4 | SHOULD | DO | THIS
-| 5 | --- | --- | skip
+| 5 | --- | --- | all
 | 6 | --- | --- | all
 | 7 | some |--- | some
-
-\*Laplace Approximation is especially important!
+- 1a, 1b, 1c, 2a, 4, 7 (some)
 
 ### Q7
 
