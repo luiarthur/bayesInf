@@ -17,5 +17,8 @@ par(mfrow=c(3,1))
 par(mfrow=c(1,1))
 
 # Plot Posterior Predictive with data
-plot.post(rgamma(length(out$v),out$v,out$theta),main="Posterior Predictive")
+plot.posts(cbind(out$v,out$theta),names=c("v","theta"))
+plot.post(rgamma(length(out$v),out$v,out$theta),main="Posterior Predictive",stay=T)
 lines(density(x),lwd=3,col="grey");
+
+#b)
