@@ -28,7 +28,6 @@ out_c <- mh_multivariate_laplace_proposal(x, priors, cand_S=cov(prelim$post), in
 plot.posts(out_c$post)
 
 #d)
-source("mh/mh.R")
 priors <- list("a_v"=3,"b_v"=1,"a_theta"=2,"b_theta"=2)
 out_d <- mh_multivariate_cauchy_laplace_proposal(x, priors, cand_S=cov(prelim$post), init=tail(prelim$post,1), B=2000, burn=50000)
 plot.posts(out_d$post)
