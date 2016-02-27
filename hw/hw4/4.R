@@ -8,13 +8,9 @@ x <- c( read.table("dat/dat4.dat")$V1 )
 
 
 #a) 
-out <- mh_in_gibbs(x,B=2000,burn=10000,cs_w=.4)
+priors <- list("a_v"=3,"b_v"=1,"a_theta"=2,"b_theta"=2)
+out <- mh_in_gibbs(x, priors, cs_w=.4, B=2000,burn=10000)
 out$acc_v
-par(mfrow=c(3,1))
-  plot(log(out$v),type='l')
-  plot(out$v,type='l')
-  plot(out$theta,type='l')
-par(mfrow=c(1,1))
 
 # Plot Posterior Predictive with data
 plot.posts(cbind(out$v,out$theta),names=c("v","theta"))
@@ -22,3 +18,17 @@ plot.post(rgamma(length(out$v),out$v,out$theta),main="Posterior Predictive",stay
 lines(density(x),lwd=3,col="grey");
 
 #b)
+prelim <- mh_multivariate(x, priors, cand_S=.05*diag(2), init=c(1,1), B=2000, burn=10000)
+out_b <- mh_multivariate(x, priors, cand_S=cov(prelim$post), init=tail(prelim$post,1), B=2000, burn=1000)
+plot.posts(out_b$post,names=c("v","theta"))
+
+#c)
+priors <- list("a_v"=3,"b_v"=1,"a_theta"=2,"b_theta"=2)
+out_c <- mh_multivariate_laplace_proposal(x, priors, cand_S=cov(prelim$post), init=tail(prelim$post,1), B=2000, burn=50000)
+plot.posts(out_c$post)
+
+#d)
+source("mh/mh.R")
+priors <- list("a_v"=3,"b_v"=1,"a_theta"=2,"b_theta"=2)
+out_d <- mh_multivariate_cauchy_laplace_proposal(x, priors, cand_S=cov(prelim$post), init=tail(prelim$post,1), B=2000, burn=50000)
+plot.posts(out_d$post)
