@@ -1,5 +1,6 @@
 mvrnorm <- function(M,S,n=nrow(S)) M + t(chol(S)) %*% rnorm(n)
 
+# http://mathoverflow.net/questions/66307/generating-samples-of-a-multivariate-cauchy-distribution
 mvrcauchy <- function(m,S) {
   z <- rchisq(1,1)
   mvrnorm(m,S/z)
