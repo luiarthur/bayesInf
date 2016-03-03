@@ -132,8 +132,9 @@ mh_multivariate_laplace_proposal <- function(x, priors, cand_S, init, B=10000, b
   }
 
   # Proposal Sampler
-  phi <- optim(c(0,0),log_lik_plus_prior,control=list("fnscale"=-1))$par #maximize
-  H <- optimHess(c(0,0),log_lik_plus_prior)
+  optimResult <- optim(c(0,0),log_lik_plus_prior,control=list("fnscale"=-1),hessian=T) #maximize and returns hessian
+  phi <- optimResult$par
+  H <- optimResult$hessian
   I <- solve(-H)
   propose <- function() mvrnorm(phi,I)
 
@@ -192,8 +193,9 @@ mh_multivariate_cauchy_laplace_proposal <- function(x, priors, cand_S, init, B=1
 
   # Proposal Sampler
 
-  phi <- optim(c(0,0),log_lik_plus_prior,control=list("fnscale"=-1))$par #maximize
-  H <- optimHess(c(0,0),log_lik_plus_prior)
+  optimResult <- optim(c(0,0),log_lik_plus_prior,control=list("fnscale"=-1),hessian=T) #maximize and returns Hessian
+  phi <- optimResult$par
+  H <- optimResult$hessian
   I <- solve(-H)
   propose <- function() { 
     out <- c( mvrcauchy(phi,I) )
