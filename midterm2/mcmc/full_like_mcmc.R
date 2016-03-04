@@ -79,5 +79,5 @@ full_like_gibbs <- function(y,tau2,cand_S=diag(7)*.01,B=2000,burn=10000,printPro
   list("phi_vec"=logit_inv(  tail(params[,-c(1:2)],B),  -1,1), # unif phi_i
        "phi"=logit_inv(  tail(params[,2],B),  -1,1),
        "v"=exp(  tail(params[,1],B)  ),
-       "acceptance_rate"=acceptance_rate)
+       "acceptance_rate"=acceptance_rate/B)
 }
