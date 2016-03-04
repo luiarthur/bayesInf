@@ -1,10 +1,9 @@
 cat("Sourcing conditional_like_mcmc.R\n")
 
-rinvgamma <- function(n,a,b) 1 / rgamma(n,a,rate=b) # a,b are the parameters in wikipedia
-logit(x,a,b) <- log(x-a) - log(b-x)
-logit_inverse <- function(x,a,b) (b*exp(x) + a) / (1+exp(x))
-
 cond_like_gibbs <- function(y,tau2,B=2000,burn=10000,printProgress=TRUE) {
+  rinvgamma <- function(n,a,b) 1 / rgamma(n,a,rate=b) # a,b are the parameters in wikipedia
+  logit <- function(x,a,b) log(x-a) - log(b-x)
+  logit_inverse <- function(x,a,b) (b*exp(x) + a) / (1+exp(x))
 
   N <- nrow(y)
   I <- ncol(y)
