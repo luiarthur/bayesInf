@@ -32,7 +32,7 @@ cond_like_gibbs <- function(y,tau2,B=2000,burn=10000,printProgress=TRUE) {
       #for (t in 2:N) {
       #  num_v <- num_v + (y[t,i] - phi_i[it,i] * y[t-1,i])^2
       #}
-      num_v <- num_v + (y[-1,i] - phi_i[it,i] * y[-N,i])^2
+      num_v <- num_v + sum( (y[-1,i] - phi_i[it,i] * y[-N,i])^2 )
     }
     v[it] <- rinvgamma(1, I*N/2, num_v / 2)
     
