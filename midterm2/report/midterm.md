@@ -80,29 +80,52 @@ where $Q^*(\phi_i)=y_{1,i}^2(1-\phi_i^2) + \ds\sum_{t=2}^T(y_{t,i}-\phi_i y_{t-1
 
 
 ### Complete Conditionals for the Full Likelihood Model
-The complete conditionals for $\phi$ and $v$ in the full model can be obtained in closed
-form. The complete conditional for $\phi_i$ can only be obtained up to a proportionality constant.
-We can implement a metropolis algorithm with
+The complete conditionals for $\phi$ and $v$ in the full model can be obtained
+in closed form. The complete conditional for $\phi_i$ can only be obtained up
+to a proportionality constant. A metropolis step can be used for updating the
+$\phi_i$'s, while Gibbs updates can be used for $\phi$ and $v$. For the
+metropolis update, we use a normal proposal (centered on the previous iterate).
+We reject the candidate draw when its absolute value is greater than 1. This is
+to accomodate the restriction that the $\phi_s$'s take one values within the
+unit circle so as to keep the density of the full model real and positive. A
+metropolis algorithm can be implemented with
+
 $$
 \begin{array}{rclcl}
   \phi &|& \phi_i, v, y &\sim& N\p{\frac{\sum_{i=1}^I \phi_i}{I}, \frac{\tau^2}{I}} \\
   \\
-  v &|& \phi_i, y &\sim& \text{InverseGamma}(\frac{IT}{2}, \frac{\sum_{i=1}^I Q(\phi_i)}{2}) \\
+  v &|& \phi_i, y &\sim& \text{InverseGamma}(\frac{IT}{2}, \frac{\sum_{i=1}^I Q^*(\phi_i)}{2}) \\
   \\
-  p(\phi_i &|& \phi, v, y) &\propto& (1-\phi_i^2)^{1/2} \exp\bc{-\frac{Q^*(\phi_i)}{2v}-\frac{(\phi_i-\phi)^2}{2\tau^2}}
+  p(\phi_i &|& \phi, v, y) &\propto& (1-\phi_i^2)^{1/2} \exp\bc{-\frac{Q^*(\phi_i)}{2v}-\frac{(\phi_i-\phi)^2}{2\tau^2}}.
 \end{array}
 $$
 
 
 ### Posterior under Full Likelihood
-
-write...
+Using the data mentioned above, the metropolis sampler was fit with $\tau^2=.1$
+and 2000 samples were drawn after a burn-in of 5000. The posterior
+distributions for $\phi$ and $v$ are shown in Figure 3. The univariate and
+bivariate trace plots don't show strong indications that the chain has not
+converged. The posteriors for $\phi$ and $v$ are not strongly correlated
+(correlation = .0362). The posterior mean of $\phi = .8004$ with a 95% HPD
+(.5224,1.0691).  The posterior mean of $v = 1.0651$ with narrow 95% HPD
+(.99,1.15).
 
 ![Posterior distribution of $\phi$ (top left) and $v$ (bottom right) under the full likelihood and $\tau^2=.1$ with 2000 samples after 5000 burn-in. The univariate trace plots are included in the univariate posterior plots, and the bivariate contour and trace plot are plotted in the top right corner. The posterior mean of $\phi = .80$ with wide 95% HPD (.52,1.07). The posterior mean of $v = 1.07$ with narrow 95% HPD (.99,1.15).](../output/phiv2.pdf)
 
-write...
+The posterior for the $\phi_i$'s under the full model, is shown in Figure 4.
+The $\phi_i$'s are not stronly correlated in the posterior. The univariate
+trace plots in the upper right corner of each univariate posterior plot don't
+show signs of non-convergence. The posterior means for
+$(\phi_1,\phi_2,\phi_3,\phi_4,\phi_5) = (.94,.98,.59,.64,.85)$. The 95%
+credible intervals are included in the plots.  The intervals only contain
+positive values, and so are "significantly" different from 0. The acceptance
+rates for $(\phi_1,\phi_2,\phi_3,\phi_4,\phi_5) = (0.41 0.23 0.49 0.44 0.36)$.
+The posteriors look slightly jagged. The credible intervals for $\phi_3$ is
+much larger than the rest.
 
-![Posterior for $\phi_i$'s unider the conditional likelihood. No strong evidence of non-convergence for 2000 samples after 5000 burn-in.](../output/phii2.pdf)
+
+![Posterior for $\phi_i$'s unider the full likelihood. No strong evidence of non-convergence for 2000 samples after 5000 burn-in.](../output/phii2.pdf)
 
 
 
