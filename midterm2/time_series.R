@@ -1,4 +1,5 @@
 set.seed(206)
+system("mkdir -p output")
 source("../R_Functions/plotPost.R",chdir=T)
 sapply(paste0("mcmc/", system("ls mcmc",intern=TRUE)),source)
 y <- read.table("data/dataexam2th_0.txt",header=TRUE)
