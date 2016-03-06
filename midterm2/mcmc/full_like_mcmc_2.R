@@ -78,4 +78,3 @@ log.like.full <- function(y,out) {
   sapply(1:B, one_like)
 }
 
-aic.full <- function(y,out) -2*log.like.full(y,out)
