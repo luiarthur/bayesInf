@@ -56,3 +56,26 @@ full_like_gibbs <- function(y,tau2,cand_s=rep(.1,ncol(y)),B=2000,burn=10000,prin
   list("phi_vec"=tail(phi_vec,B),"phi"=tail(phi,B),"v"=tail(v,B),"acc_phi_vec"=acc_phi_vec/B)
 
 }
+
+
+log.like.full <- function(y,out) {
+  phi <- out$phi
+  v <- out$v
+  phi_vec <- out$phi_vec
+
+  B <- length(phi)
+  N <- nrow(y)
+  I <- ncol(y)
+
+  Q_star <- function(i,phi_i) 
+    y[1,i]^2*(1-phi_i^2) + sum( (y[-1,i] - phi_i*y[-N,i])^2 )
+
+  one_like <- function(b) {
+    sum_Qs <- sum(sapply(1:I,function(i) Q_star(i,phi_vec[b,i])))
+    .5*sum(log(1-phi_vec[b,]^2)) - (I*N)/2*log(v[b]) - sum_Qs/(2*v[b])
+  }
+
+  sapply(1:B, one_like)
+}
+
+aic.full <- function(y,out) -2*log.like.full(y,out)

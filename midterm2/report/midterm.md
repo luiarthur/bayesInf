@@ -49,25 +49,29 @@ $$
 $$
 
 ### Posterior under Conditional Likelihood
-Using the data given in `dataexam2th.txt`, the Gibbs sampler was fit with
-$\tau^2=.1$ and 2000 samples were drawn after a burn-in of 1000. The posterior
-distributions are shown in Figure 1. The univariate and bivariate trace plots
-don't show strong indications that the chain has not converged. The posteriors
-for $\phi$ and $v$ are not strongly correlated (correlation = .0178). The
-posterior mean of $\phi = .8423$ with wide 95% HPD (-2.05,3.57).  The posterior
-mean of $v = 1.07$ with narrow 95% HPD (.99,1.14).
+Using the data given in `dataexam2th.txt` (see Figures 1 and 2), the Gibbs
+sampler was fit with $\tau^2=.1$ and 2000 samples were drawn after a burn-in of
+1000. The posterior distributions are shown in Figure 3. The univariate and
+bivariate trace plots don't show strong indications that the chain has not
+converged. The posteriors for $\phi$ and $v$ are not strongly correlated
+(correlation = .0178). The posterior mean of $\phi = .8423$ with wide 95% HPD
+(-2.05,3.57).  The posterior mean of $v = 1.07$ with narrow 95% HPD (.99,1.14).
+
+![The data consists of 5 time series, each containing 300 observations. ](../output/rawY.pdf)
+
+![The 5 time series are plotted against themselves with of lag of 1. The time series are positively correlated.](../output/lag1.pdf)
 
 ![Posterior distribution of $\phi$ (top left) and $v$ (bottom right) under the conditional likelihood and $\tau^2=.1$ with 2000 samples after 1000 burn-in. The univariate trace plots are included in the univariate posterior plots, and the bivariate contour and trace plot are plotted in the top right corner. The posterior mean of $\phi = .84$ with wide 95% HPD (-2.05,3.57). The posterior mean of $v = 1.07$ with narrow 95% HPD (.99,1.14).](../output/phiv1.pdf)
 
-The posterior for $\phi_i$, where $i=1,...,5$ is shown in Figure 2. The
-$\phi_i$'s are not stronly correlated a posteriori. The univariate trace plots
+The posterior for $\phi_i$, where $i=1,...,5$ is shown in Figure 4. The
+$\phi_i$'s are not strongly correlated a posteriori. The univariate trace plots
 in the upper right corner of each univariate posterior plot don't show signs of
 non-convergence. The posterior means for $(\phi_1,\phi_2,\phi_3,\phi_4,\phi_5)
 = (.94,.98,.58,.64,.85)$. The 95% credible intervals are included in the plots.
 The intervals only contain positive values, and so are "significantly" different
 from 0. The credible intervals for $\phi_3$ is much larger than the rest.
 
-![Posterior for $\phi_i$'s unider the conditional likelihood. No strong evidence of non-convergence for 2000 samples after 1000 burn-in.](../output/phii1.pdf)
+![Posterior for $\phi_i$'s under the conditional likelihood. No strong evidence of non-convergence for 2000 samples after 1000 burn-in.](../output/phii1.pdf)
 
 
 
@@ -86,7 +90,7 @@ to a proportionality constant. A metropolis step can be used for updating the
 $\phi_i$'s, while Gibbs updates can be used for $\phi$ and $v$. For the
 metropolis update, we use a normal proposal (centered on the previous iterate).
 We reject the candidate draw when its absolute value is greater than 1. This is
-to accomodate the restriction that the $\phi_s$'s take one values within the
+to accommodate the restriction that the $\phi_s$'s take one values within the
 unit circle so as to keep the density of the full model real and positive. A
 metropolis algorithm can be implemented with
 
@@ -104,7 +108,7 @@ $$
 ### Posterior under Full Likelihood
 Using the data mentioned above, the metropolis sampler was fit with $\tau^2=.1$
 and 2000 samples were drawn after a burn-in of 5000. The posterior
-distributions for $\phi$ and $v$ are shown in Figure 3. The univariate and
+distributions for $\phi$ and $v$ are shown in Figure 5. The univariate and
 bivariate trace plots don't show strong indications that the chain has not
 converged. The posteriors for $\phi$ and $v$ are not strongly correlated
 (correlation = .0362). The posterior mean of $\phi = .8004$ with a 95% HPD
@@ -113,8 +117,8 @@ converged. The posteriors for $\phi$ and $v$ are not strongly correlated
 
 ![Posterior distribution of $\phi$ (top left) and $v$ (bottom right) under the full likelihood and $\tau^2=.1$ with 2000 samples after 5000 burn-in. The univariate trace plots are included in the univariate posterior plots, and the bivariate contour and trace plot are plotted in the top right corner. The posterior mean of $\phi = .80$ with wide 95% HPD (.52,1.07). The posterior mean of $v = 1.07$ with narrow 95% HPD (.99,1.15).](../output/phiv2.pdf)
 
-The posterior for the $\phi_i$'s under the full model, is shown in Figure 4.
-The $\phi_i$'s are not stronly correlated in the posterior. The univariate
+The posterior for the $\phi_i$'s under the full model, is shown in Figure 6.
+The $\phi_i$'s are not strongly correlated in the posterior. The univariate
 trace plots in the upper right corner of each univariate posterior plot don't
 show signs of non-convergence. The posterior means for
 $(\phi_1,\phi_2,\phi_3,\phi_4,\phi_5) = (.94,.98,.59,.64,.85)$. The 95%
@@ -125,11 +129,36 @@ The posteriors look slightly jagged. The credible intervals for $\phi_3$ is
 much larger than the rest.
 
 
-![Posterior for $\phi_i$'s unider the full likelihood. No strong evidence of non-convergence for 2000 samples after 5000 burn-in.](../output/phii2.pdf)
+![Posterior for $\phi_i$'s under the full likelihood. No strong evidence of non-convergence for 2000 samples after 5000 burn-in.](../output/phii2.pdf)
 
 
+# Comparison of the two models
+We compare the two models by (1) observing the difference between the
+posteriors and (2) computing the BIC's.
+
+## Comparison using Posteriors
+The posteriors for the two models are very similar. In fact, with the exception
+of $\phi$, the 95% HPD's and posterior means are nearly identical for the two
+models for all the parameters. The reason for this is that in the full model, the 
+density forces the $\phi_i$'s to have support in the unit circle. Since the full
+conditional for $\phi$ is governed by the mean of the $\phi_i$'s, which is 
+bounded, we see that the posterior variance of $\phi$ is also reduced. However,
+the posterior means are similar for the two models.
+
+## Comparison using BIC
+The posterior mean of the BIC for the conditional and full models were -797 and
+-804 respectively. The posterior mean difference of the BIC's (full -
+conditional model) was 12.8, with 95% HPD (3.34,22.4). That is the BIC of the
+full model is on average 12.8 greater than that of the conditional model.
+Models with lower BIC are favored. So, the conditional model is favored
+according to BIC. The evidence *in favor* of the conditional model is
+"positive" to "strong".
+
+## 
 
 [//]: # (To fix: ----------------------------------------------------------------)
 [//]: # (   1. Plot positions )
 [//]: # (   2. Add Code )
+[//]: # (   3. Posterior Predictives )
+[//]: # (   4. I think the conditional likelihood should have a -1 in the denominator )
 

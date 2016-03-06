@@ -5,6 +5,17 @@ source("mcmc/conditional_like_mcmc.R")
 
 
 y <- read.table("data/dataexam2th_0.txt",header=TRUE)
+N <- nrow(y)
+
+pdf("output/rawY.pdf",w=13,h=9)
+  plot(ts(y),main="")
+dev.off()
+
+pdf("output/lag1.pdf",w=13,h=9)
+  par(mfrow=c(3,2))
+    sapply(1:ncol(y), function(i) plot(y[-N,i],y[-1,i],xlab="lag 1",ylab=paste0("y",i),pch=20))
+  par(mfrow=c(1,1))
+dev.off()
 
 tau.sq <- c(.1, 1, 10)
 
@@ -38,4 +49,35 @@ pdf("output/phii2.pdf",w=13,h=9)
     sapply(1:ncol(y),function(i) plot.post(out_2$phi_vec[,i],cex.l=1.5,cex.axis=1.5,stay=T,main=paste0(expression(phi),i)))
   par(mfrow=c(1,1))
 dev.off()
+
+
+## Conditional model
+ll.cond <- log.like.cond(y,out_1)
+
+## Full model
+ll.full <- log.like.full(y,out_2)
+
+## Difference in BIC
+plot(density(ll.cond),col="red",xlim=range(c(ll.full,ll.cond)),ylim=c(0,.3))
+lines(density(ll.full),col="blue")
+
+plot.post(-2*(ll.full-ll.cond),stay=T,main="BIC (Full - Conditional Model)")
+
+
+# Posterior Predictive: #################################3
+#set.seed(206)
+#pp.cond <- post.pred.cond(y,out_1$phi,out_1$phi_vec,out_1$v,tau.sq[1])
+#
+#par(mfrow=c(3,2))
+#for (i in 1:5) {
+#  bd <- range(apply(pp.cond[[i]],2,function(x) quantile(x,c(.025,.975))))
+#  bd <- range(bd,pp.cond[[i]][1,])
+#  plot(y[,i],type='l',col="grey",ylab=paste0("y",i),ylim=bd,lwd=1)
+#  lines(pp.cond[[i]][1,],col="black",lwd=1)
+#  lines(apply(pp.cond[[i]],2,mean),col="blue",lwd=1)
+#  lines(apply(pp.cond[[i]],2,function(x)quantile(x,.025)),col="blue",lwd=1)
+#  lines(apply(pp.cond[[i]],2,function(x)quantile(x,.975)),col="blue",lwd=1)
+#}
+#par(mfrow=c(1,1))
+
 

@@ -41,5 +41,51 @@ cond_like_gibbs <- function(y,tau2,B=2000,burn=10000,printProgress=TRUE) {
   }
   cat("\n")
 
-  list("phi_i"=tail(phi_i,B),"phi"=tail(phi,B),"v"=tail(v,B))
+  list("phi_vec"=tail(phi_i,B),"phi"=tail(phi,B),"v"=tail(v,B))
+}
+
+post.pred.cond <- function(y,phi,phi_vec,v,tau2) {
+  B <- length(phi)
+  N <- nrow(y)
+  I <- ncol(y)
+
+  pred_chain_i <- function(i,b) {
+    pred_y <- NULL
+    pred_y[1] <- y[1,i]
+    for (t in 2:N) {
+      pred_y[t] <- rnorm(1, pred_y[t-1] * phi_vec[b,i], sqrt(v[b]))
+    }
+    pred_y
+  }
+  
+  out <- as.list(1:I)
+  for (i in 1:I) {
+    out[[i]] <- matrix(0,B,N)
+    for (b in 1:B) {
+      out[[i]][b,] <- pred_chain_i(i,b)
+      cat("\rb: ",b,";  i:",i,"     ")
+    }
+  }
+  cat("\n")
+
+  out
+}
+
+log.like.cond <- function(y,out) {
+  phi <- out$phi
+  v <- out$v
+  phi_vec <- out$phi_vec
+
+  B <- length(phi)
+  N <- nrow(y)
+  I <- ncol(y)
+
+  Q <- function(i,phi_i,b) {
+    sum( (y[-1,i] - phi_vec[b,i] * y[-N,i])^2 )
+  }
+
+  one_like <- function(b)
+    -I*N/2*log(v[b])-sum(sapply(1:I,function(i) Q(i,phi_vec[b,i],b))) /(2*v[b])
+
+  sapply(1:B, one_like)
 }
