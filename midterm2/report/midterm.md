@@ -42,9 +42,9 @@ $$
 \begin{array}{rclcl}
   \phi &|& \phi_i, v, y &\sim& N\p{\frac{\sum_{i=1}^I \phi_i}{I}, \frac{\tau^2}{I}} \\
   \\
-  v &|& \phi_i, y &\sim& \text{InverseGamma}(\frac{IT}{2}, \frac{\sum_{i=1}^I Q(\phi_i)}{2}) \\
+  v &|& \phi_i, y &\sim& \text{InverseGamma}\p{\frac{IT}{2}, \frac{\sum_{i=1}^I Q(\phi_i)}{2}} \\
   \\
-  \phi_i &|& \phi, v, y &\sim& N(\frac{\phi v+\tau^2\sum_{t=2}^T y_{t,i}y_{t-1,i}}{v+\tau^2\sum_{t=2}^T (y_{t-1,i})^2},\frac{v\tau^2}{v+\tau^2\sum_{t=2}^T (y_{t-1,i})^2}).
+  \phi_i &|& \phi, v, y &\sim& N\p{\frac{\phi v+\tau^2\sum_{t=2}^T y_{t,i}y_{t-1,i}}{v+\tau^2\sum_{t=2}^T (y_{t-1,i})^2},\frac{v\tau^2}{v+\tau^2\sum_{t=2}^T (y_{t-1,i})^2}}.
 \end{array}
 $$
 
@@ -62,15 +62,15 @@ converged. The posteriors for $\phi$ and $v$ are not strongly correlated
 
 ![The 5 time series are plotted against themselves with of lag of 1. The time series are positively correlated.](../output/lag1.pdf)
 
-![Posterior distribution of $\phi$ (top left) and $v$ (bottom right) under the conditional likelihood and $\tau^2=.1$ with 2000 samples after 1000 burn-in. The univariate trace plots are included in the univariate posterior plots, and the bivariate contour and trace plot are plotted in the top right corner. The posterior mean of $\phi = .80$ with wide 95% HPD (-2.05,3.57). The posterior mean of $v = 1.07$ with narrow 95% HPD (.99,1.14).](../output/phiv1.pdf)
+![Posterior distribution of $\phi$ (top left) and $v$ (bottom right) under the conditional likelihood and $\tau^2=.1$ with 2000 samples after 1000 burn-in. The univariate trace plots are included in the univariate posterior plots, and the bivariate contour and trace plot are plotted in the top right corner. The posterior mean of $\phi = .80$ with a 95% HPD (.509,1.07). The posterior mean of $v = 1.07$ with narrow 95% HPD (.99,1.14).](../output/phiv1.pdf)
 
 The posterior for $\phi_i$, where $i=1,...,5$ is shown in Figure 4. The
 $\phi_i$'s are not strongly correlated a posteriori. The univariate trace plots
 in the upper right corner of each univariate posterior plot don't show signs of
 non-convergence. The posterior means for $(\phi_1,\phi_2,\phi_3,\phi_4,\phi_5)
-= (.94,.98,.59,.64,.85)$. The 95% credible intervals are included in the plots.
+= (.94,.98,.59,.64,.85)$. The 95% HPD's are included in the plots.
 The intervals only contain positive values, and so are "significantly" different
-from 0. The credible intervals for $\phi_3$ is much larger than the rest.
+from 0. The HPD's for $\phi_3$ is much larger than the rest.
 
 ![Posterior for $\phi_i$'s under the conditional likelihood. No strong evidence of non-convergence for 2000 samples after 1000 burn-in.](../output/phii1.pdf)
 
@@ -91,9 +91,9 @@ to a proportionality constant. A metropolis step can be used for updating the
 $\phi_i$'s, while Gibbs updates can be used for $\phi$ and $v$. For the
 metropolis update, we use a normal proposal (centered on the previous iterate).
 We reject the candidate draw when its absolute value is greater than 1. This is
-to accommodate the restriction that the $\phi_s$'s take one values within the
+to accommodate the restriction that the $\phi_i$'s take on values within the
 unit circle so as to keep the density of the full model real and positive. A
-metropolis algorithm can be implemented with
+metropolis within Gibbs algorithm can be implemented with
 
 $$
 \begin{array}{rclcl}
@@ -123,10 +123,10 @@ The $\phi_i$'s are not strongly correlated in the posterior. The univariate
 trace plots in the upper right corner of each univariate posterior plot don't
 show signs of non-convergence. The posterior means for
 $(\phi_1,\phi_2,\phi_3,\phi_4,\phi_5) = (.94,.98,.59,.64,.85)$. The 95%
-credible intervals are included in the plots.  The intervals only contain
+HPD's are included in the plots.  The intervals only contain
 positive values, and so are "significantly" different from 0. The acceptance
 rates for $(\phi_1,\phi_2,\phi_3,\phi_4,\phi_5) = (0.41 0.23 0.49 0.44 0.36)$.
-The posteriors look slightly jagged. The credible intervals for $\phi_3$ is
+The posteriors look slightly jagged. The HPD's for $\phi_3$ is
 much larger than the rest.
 
 
@@ -164,16 +164,17 @@ Recall that the complete conditional for $\phi$ is $\phi | v,
 \phi_1,...,\phi_I, y \sim N(\sum_{i=1}^I \phi_i/I,\tau^2/I)$.  It is clear that
 for small values of $\tau^2$, $\phi$ will have much less variability from the
 mean of the $\phi_i$'s; whereas with large values of $\tau^2$, $\phi$ will have
-more variability. This is reflected in Figure 8, where we see the 95% HPD's
-increase with $\tau^2$. This does not strongly affect the posterior posterior
-mean of $\phi$ but increases the posterior variance for $\phi$. Yet, by being
-very uncertain ($\tau^2=10$), the posterior standard deviation for $\phi$ only
-increases 1 (from when $\tau^2=.1$). Setting $\tau^2=1$ is an excellent choice
-for this problem, because this time series is stationary. This means that $\phi$
-has to be within the unit circle, resulting in much greater information about 
-$\phi$, and a lower $\tau^2$. The BIC's did not change with different 
-$\tau^2$. This is possibly because in calculating the likelihood with the posterior
-draws, $\phi$ is not explicitly used, but $\phi_i$ and $v$.
+more variability. This is reflected in Figure 8, where we see the 95% HPD
+widths increase with $\tau^2$. This does not strongly affect the posterior
+posterior mean of $\phi$ but increases the posterior variance for $\phi$. Yet,
+by being very uncertain ($\tau^2=10$), the posterior standard deviation for
+$\phi$ only increases 1 (from when $\tau^2=.1$). Setting $\tau^2=1$ is an
+excellent choice for this problem, because this time series is stationary. This
+means that $\phi$ has to be within the unit circle, resulting in much greater
+information about $\phi$, a smaller range of viable values for $\phi$, and a
+lower $\tau^2$. The BIC's did not change with different $\tau^2$. This is
+possibly because in calculating the likelihood with the posterior draws, $\phi$
+is not explicitly used, but $\phi_i$ and $v$.
 
 ![Prior Sensitivity. $\phi$ has greater variability reflected in wider HPD's as $\tau^2$ increases.](../output/priorSensitivity.pdf)
 
