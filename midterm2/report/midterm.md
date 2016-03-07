@@ -44,7 +44,7 @@ $$
   \\
   v &|& \phi_i, y &\sim& \text{InverseGamma}(\frac{IT}{2}, \frac{\sum_{i=1}^I Q(\phi_i)}{2}) \\
   \\
-  \phi_i &|& \phi, v, y &\sim& N(\frac{\phi v+\tau^2\sum_{t=2}^T y_{t,i}y_{t-1,i}}{v+\sum_{t=2}^T (y_{t-1,i})^2},\frac{v\tau^2}{v+\sum_{t=2}^T (y_{t-1,i})^2}).
+  \phi_i &|& \phi, v, y &\sim& N(\frac{\phi v+\tau^2\sum_{t=2}^T y_{t,i}y_{t-1,i}}{v+\tau^2\sum_{t=2}^T (y_{t-1,i})^2},\frac{v\tau^2}{v+\tau^2\sum_{t=2}^T (y_{t-1,i})^2}).
 \end{array}
 $$
 
